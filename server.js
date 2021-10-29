@@ -36,11 +36,32 @@ app.get('/', (req, res) => {
 // GET request handler for '/year/*'
 app.get('/year/:selected_year', (req, res) => {
     console.log(req.params.selected_year);
-    fs.readFile(path.join(template_dir, 'year.html'), (err, template) => {
-        // modify `template` and send response
-        // this will require a query to the SQL database
+    fs.readFile(path.join(template_dir, 'year.html'), 'utf-8', (err, template) => {
+        
+        if (err) {
+            res.status(404).send('Error: file not found');
+        }
 
-        res.status(200).type('html').send(template); // <-- you may need to change this
+        else {
+            // modify `template` and send response
+            // this will require a query to the SQL database
+            let year = req.params.selected_year;
+            let response = template.replace("{{{TOPYEAR}}}", year);
+
+            db.all('SELECT state_abbreviation, coal, natural_gas, nuclear, petroleum, renewable FROM Consumption WHERE year = ?', [req.params.selected_year], (err, rows) => {
+                console.log(rows);
+                let i;
+                let list_items = '';
+                for(i = 0; i < rows.length; i++) {
+                    var total = parseInt(rows[2].name + rows[3].name + rows[4].name + rows[5].name + rows[6].name)
+                    list_items = '<td>' + rows[1].name + '</td>' + '<td>' + rows[2].name + '</td>'+ '<td>' + rows[3].name + '</td>'+ '<td>' + rows[4].name + '</td>'+ '<td>' + rows[5].name + '</td>'+ '<td>' + total + '</td>';
+                }
+                console.log(list_items);
+                response = response.replace("{{{TABLE}}}", list_items);
+
+                res.status(200).type('html').send(response); // <-- you may need to change this
+            });
+        }
     });
 });
 
