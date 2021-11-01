@@ -14,6 +14,7 @@ let db_filename = path.join(__dirname, 'db', 'usenergy.sqlite3');
 let app = express();
 let port = 8000;
 
+
 // Open usenergy.sqlite3 database
 let db = new sqlite3.Database(db_filename, sqlite3.OPEN_READONLY, (err) => {
     if (err) {
@@ -75,22 +76,109 @@ app.get('/year/:selected_year', (req, res) => {
 // GET request handler for '/state/*'
 app.get('/state/:selected_state', (req, res) => {
     console.log(req.params.selected_state);
-    fs.readFile(path.join(template_dir, 'state.html'), (err, template) => {
+    fs.readFile(path.join(template_dir, 'state.html'), 'utf-8', (err, template) => {
         // modify `template` and send response
         // this will require a query to the SQL database
+        if (err) {
+            res.status(404).send('Error: file not found');
+        }
 
-        res.status(200).type('html').send(template); // <-- you may need to change this
+        else {
+            // modify `template` and send response
+            // this will require a query to the SQL database
+            let state = req.params.selected_state;
+
+
+            let stateAbrev = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID',
+                'IL', 'IN', 'IA', 'KS', 'KT', 'LA', 'MA', 'MD', 'MS', 'MI', 'MN', 'MS', 'MO', 'MT',
+                'NB', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
+                'SD', 'TN', 'TX', 'UT', 'VT', 'VI', 'WA', 'WV', 'WI', 'WY', 'DC'];
+            let stateFull = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut',
+                'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
+                'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri',
+                'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina',
+                'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina',
+                'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia',
+                'Wisconsin', 'Wyoming', 'Washington D.C.'];
+            let i;
+            stateName = '';
+            for (i=0; i<51; i++){
+                if (stateAbrev[i].toUpperCase()==state.toUpperCase()){
+                    stateName = stateFull[i];
+                    break;
+                }
+            }
+
+            if (stateName==''){
+                res.status(404).send('Error: no data for state ' + state.toUpperCase());
+            }
+
+            else {
+                let response = template.replace("{{{TOPSTATE}}}", stateName);
+                db.all('SELECT year, coal, natural_gas, nuclear, petroleum, renewable FROM Consumption WHERE state_abbreviation = ? ORDER BY year ASC', [req.params.selected_state], (err, rows) => {
+                    console.log(rows);
+                    let i;
+                    let list_items = '';
+                    for(i = 0; i < rows.length; i++) {
+                        var total = parseInt(rows[i].coal) + parseInt(rows[i].natural_gas) + parseInt(rows[i].nuclear) + parseInt(rows[i].petroleum) + parseInt(rows[i].renewable);
+                        list_items += '<tr><td>' + rows[i].year + '</td>' + '<td>' + rows[i].coal + '</td>'+ '<td>' + rows[i].natural_gas + '</td>'+ '<td>' + rows[i].nuclear + '</td>'+ '<td>' + rows[i].petroleum + '</td>'+ '<td>' + rows[i].renewable + '</td>' + '<td>' + total + '</td></tr>';
+                    }
+                    console.log(list_items);
+                    response = response.replace("{{{TABLE}}}", list_items);
+
+                    res.status(200).type('html').send(response); // <-- you may need to change this
+                });
+            }
+        }
+
     });
 });
 
 // GET request handler for '/energy/*'
 app.get('/energy/:selected_energy_source', (req, res) => {
     console.log(req.params.selected_energy_source);
-    fs.readFile(path.join(template_dir, 'energy.html'), (err, template) => {
+    fs.readFile(path.join(template_dir, 'energy.html'), 'utf-8', (err, template) => {
         // modify `template` and send response
         // this will require a query to the SQL database
+        if (err) {
+            res.status(404).send('Error: file not found');
+        }
 
-        res.status(200).type('html').send(template); // <-- you may need to change this
+        else {
+            // modify `template` and send response
+            // this will require a query to the SQL database
+            let source = req.params.selected_energy_source;
+
+            if (source.toUpperCase()!='COAL' && source.toUpperCase()!='NATURAL_GAS' &&
+                source.toUpperCase()!='NUCLEAR' && source.toUpperCase()!='PETROLEUM' &&
+                source.toUpperCase()!='RENEWABLE'){
+                res.status(404).send('Error: no data for source ' + source);
+            }
+
+            else
+            {
+
+                let response = template.replace("{{{TOPENERGY}}}", source);
+
+                db.all('SELECT year, state_abbreviation, ? FROM Consumption ORDER BY year ASC', [req.params.selected_energy_source], (err, rows) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    else {
+                        console.log(rows);
+                        let i;
+                        let list_items = '';
+                        for(i = 0; i < rows.length; i++) {
+                            list_items += '<tr><th>' + rows[i].year + '</th>' + '<th>' + rows[i].state_abbreviation + '</th></tr>';
+                        }
+                        console.log(list_items);
+                        response = response.replace("{{{TABLE}}}", list_items);
+
+                        res.status(200).type('html').send(response); // <-- you may need to change this
+                    }
+                });
+            }
+        }
     });
 });
 
