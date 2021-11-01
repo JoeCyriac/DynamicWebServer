@@ -46,6 +46,10 @@ app.get('/year/:selected_year', (req, res) => {
             // modify `template` and send response
             // this will require a query to the SQL database
             let year = req.params.selected_year;
+            if (year < 1960 || year > 2018) {
+                res.status(404).send('Error: no data for year ' + year);
+            }
+
             let response = template.replace("{{{TOPYEAR}}}", year);
 
             db.all('SELECT state_abbreviation, coal, natural_gas, nuclear, petroleum, renewable FROM Consumption WHERE year = ?', [req.params.selected_year], (err, rows) => {
@@ -53,8 +57,8 @@ app.get('/year/:selected_year', (req, res) => {
                 let i;
                 let list_items = '';
                 for(i = 0; i < rows.length; i++) {
-                    var total = parseInt(rows[2].name + rows[3].name + rows[4].name + rows[5].name + rows[6].name)
-                    list_items = '<td>' + rows[1].name + '</td>' + '<td>' + rows[2].name + '</td>'+ '<td>' + rows[3].name + '</td>'+ '<td>' + rows[4].name + '</td>'+ '<td>' + rows[5].name + '</td>'+ '<td>' + total + '</td>';
+                    var total = parseInt(rows[i].coal) + parseInt(rows[i].natural_gas) + parseInt(rows[i].nuclear) + parseInt(rows[i].petroleum) + parseInt(rows[i].renewable);
+                    list_items += '<tr><td>' + rows[i].state_abbreviation + '</td>' + '<td>' + rows[i].coal + '</td>'+ '<td>' + rows[i].natural_gas + '</td>'+ '<td>' + rows[i].nuclear + '</td>'+ '<td>' + rows[i].petroleum + '</td>'+ '<td>' + rows[i].renewable + '</td>' + '<td>' + total + '</td></tr>';
                 }
                 console.log(list_items);
                 response = response.replace("{{{TABLE}}}", list_items);
