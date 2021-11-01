@@ -50,21 +50,24 @@ app.get('/year/:selected_year', (req, res) => {
                 res.status(404).send('Error: no data for year ' + year);
             }
 
-            let response = template.replace("{{{TOPYEAR}}}", year);
+            else {
 
-            db.all('SELECT state_abbreviation, coal, natural_gas, nuclear, petroleum, renewable FROM Consumption WHERE year = ?', [req.params.selected_year], (err, rows) => {
-                console.log(rows);
-                let i;
-                let list_items = '';
-                for(i = 0; i < rows.length; i++) {
-                    var total = parseInt(rows[i].coal) + parseInt(rows[i].natural_gas) + parseInt(rows[i].nuclear) + parseInt(rows[i].petroleum) + parseInt(rows[i].renewable);
-                    list_items += '<tr><td>' + rows[i].state_abbreviation + '</td>' + '<td>' + rows[i].coal + '</td>'+ '<td>' + rows[i].natural_gas + '</td>'+ '<td>' + rows[i].nuclear + '</td>'+ '<td>' + rows[i].petroleum + '</td>'+ '<td>' + rows[i].renewable + '</td>' + '<td>' + total + '</td></tr>';
-                }
-                console.log(list_items);
-                response = response.replace("{{{TABLE}}}", list_items);
+                let response = template.replace("{{{TOPYEAR}}}", year);
 
-                res.status(200).type('html').send(response); // <-- you may need to change this
-            });
+                db.all('SELECT state_abbreviation, coal, natural_gas, nuclear, petroleum, renewable FROM Consumption WHERE year = ?', [req.params.selected_year], (err, rows) => {
+                    console.log(rows);
+                    let i;
+                    let list_items = '';
+                    for(i = 0; i < rows.length; i++) {
+                        var total = parseInt(rows[i].coal) + parseInt(rows[i].natural_gas) + parseInt(rows[i].nuclear) + parseInt(rows[i].petroleum) + parseInt(rows[i].renewable);
+                        list_items += '<tr><td>' + rows[i].state_abbreviation + '</td>' + '<td>' + rows[i].coal + '</td>'+ '<td>' + rows[i].natural_gas + '</td>'+ '<td>' + rows[i].nuclear + '</td>'+ '<td>' + rows[i].petroleum + '</td>'+ '<td>' + rows[i].renewable + '</td>' + '<td>' + total + '</td></tr>';
+                    }
+                    console.log(list_items);
+                    response = response.replace("{{{TABLE}}}", list_items);
+
+                    res.status(200).type('html').send(response); // <-- you may need to change this
+                });
+            }
         }
     });
 });
