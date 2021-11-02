@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <title>US Energy Consumption</title>
@@ -15,20 +15,24 @@
         var petroleum_count = {{{PETROLEUM_COUNT}}};
         var renewable_count = {{{RENEWABLE_COUNT}}};
     </script>
-</head>
-<body>
+  </head>
+  <body>
     <h1>{{{TOPYEAR}}}</h1>
     <table>
-        <tr>
-          <th>State</th>
-          <th>Coal</th> 
-          <th>Natural Gas</th>
-          <th>Nuclear</th> 
-          <th>Petroleum</th>
-          <th>Renewable</th>
-          <th>Total</th>
-        </tr> 
-        {{{TABLE}}}
+        <thead>
+          <tr>
+            <th>State</th>
+            <th>Coal</th> 
+            <th>Natural Gas</th>
+            <th>Nuclear</th> 
+            <th>Petroleum</th>
+            <th>Renewable</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{{TABLE}}}
+        </tbody> 
       </table>
-</body>
+  </body>
 </html>

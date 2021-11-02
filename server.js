@@ -47,7 +47,7 @@ app.get('/year/:selected_year', (req, res) => {
             // modify `template` and send response
             // this will require a query to the SQL database
             let year = req.params.selected_year;
-            if (year < 1960 || year > 2018 || Number.isInteger(year)==false) {
+            if (year < 1960 || year > 2018 || parseInt(year)*0 != 0) {
                 res.status(404).send('Error: no data for year ' + year);
             }
 
