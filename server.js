@@ -47,7 +47,7 @@ app.get('/year/:selected_year', (req, res) => {
             // modify `template` and send response
             // this will require a query to the SQL database
             let year = req.params.selected_year;
-            if (year < 1960 || year > 2018) {
+            if (year < 1960 || year > 2018 || Number.isInteger(year)==false) {
                 res.status(404).send('Error: no data for year ' + year);
             }
 
@@ -56,17 +56,22 @@ app.get('/year/:selected_year', (req, res) => {
                 let response = template.replace("{{{TOPYEAR}}}", year);
 
                 db.all('SELECT state_abbreviation, coal, natural_gas, nuclear, petroleum, renewable FROM Consumption WHERE year = ?', [req.params.selected_year], (err, rows) => {
-                    console.log(rows);
-                    let i;
-                    let list_items = '';
-                    for(i = 0; i < rows.length; i++) {
-                        var total = parseInt(rows[i].coal) + parseInt(rows[i].natural_gas) + parseInt(rows[i].nuclear) + parseInt(rows[i].petroleum) + parseInt(rows[i].renewable);
-                        list_items += '<tr><td>' + rows[i].state_abbreviation + '</td>' + '<td>' + rows[i].coal + '</td>'+ '<td>' + rows[i].natural_gas + '</td>'+ '<td>' + rows[i].nuclear + '</td>'+ '<td>' + rows[i].petroleum + '</td>'+ '<td>' + rows[i].renewable + '</td>' + '<td>' + total + '</td></tr>';
+                    if (err) {
+                        res.status(404).send('Error: data not found');
                     }
-                    console.log(list_items);
-                    response = response.replace("{{{TABLE}}}", list_items);
+                    else {
+                        console.log(rows);
+                        let i;
+                        let list_items = '';
+                        for(i = 0; i < rows.length; i++) {
+                            var total = parseInt(rows[i].coal) + parseInt(rows[i].natural_gas) + parseInt(rows[i].nuclear) + parseInt(rows[i].petroleum) + parseInt(rows[i].renewable);
+                            list_items += '<tr><td>' + rows[i].state_abbreviation + '</td>' + '<td>' + rows[i].coal + '</td>'+ '<td>' + rows[i].natural_gas + '</td>'+ '<td>' + rows[i].nuclear + '</td>'+ '<td>' + rows[i].petroleum + '</td>'+ '<td>' + rows[i].renewable + '</td>' + '<td>' + total + '</td></tr>';
+                        }
+                        console.log(list_items);
+                        response = response.replace("{{{TABLE}}}", list_items);
 
-                    res.status(200).type('html').send(response); // <-- you may need to change this
+                        res.status(200).type('html').send(response); // <-- you may need to change this
+                    }
                 });
             }
         }
@@ -86,7 +91,7 @@ app.get('/state/:selected_state', (req, res) => {
         else {
             // modify `template` and send response
             // this will require a query to the SQL database
-            let state = req.params.selected_state;
+            let state = req.params.selected_state.toUpperCase();
 
 
             let stateAbrev = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID',
@@ -103,7 +108,7 @@ app.get('/state/:selected_state', (req, res) => {
             let i;
             stateName = '';
             for (i=0; i<51; i++){
-                if (stateAbrev[i].toUpperCase()==state.toUpperCase()){
+                if (stateAbrev[i].toUpperCase()==state){
                     stateName = stateFull[i];
                     break;
                 }
@@ -115,18 +120,23 @@ app.get('/state/:selected_state', (req, res) => {
 
             else {
                 let response = template.replace("{{{TOPSTATE}}}", stateName);
-                db.all('SELECT year, coal, natural_gas, nuclear, petroleum, renewable FROM Consumption WHERE state_abbreviation = ? ORDER BY year ASC', [req.params.selected_state], (err, rows) => {
-                    console.log(rows);
-                    let i;
-                    let list_items = '';
-                    for(i = 0; i < rows.length; i++) {
-                        var total = parseInt(rows[i].coal) + parseInt(rows[i].natural_gas) + parseInt(rows[i].nuclear) + parseInt(rows[i].petroleum) + parseInt(rows[i].renewable);
-                        list_items += '<tr><td>' + rows[i].year + '</td>' + '<td>' + rows[i].coal + '</td>'+ '<td>' + rows[i].natural_gas + '</td>'+ '<td>' + rows[i].nuclear + '</td>'+ '<td>' + rows[i].petroleum + '</td>'+ '<td>' + rows[i].renewable + '</td>' + '<td>' + total + '</td></tr>';
+                db.all('SELECT year, coal, natural_gas, nuclear, petroleum, renewable FROM Consumption WHERE state_abbreviation = ? ORDER BY year ASC', [state], (err, rows) => {
+                    if (err) {
+                        res.status(404).send('Error: data not found');
                     }
-                    console.log(list_items);
-                    response = response.replace("{{{TABLE}}}", list_items);
+                    else {    
+                        console.log(rows);
+                        let i;
+                        let list_items = '';
+                        for(i = 0; i < rows.length; i++) {
+                            var total = parseInt(rows[i].coal) + parseInt(rows[i].natural_gas) + parseInt(rows[i].nuclear) + parseInt(rows[i].petroleum) + parseInt(rows[i].renewable);
+                            list_items += '<tr><td>' + rows[i].year + '</td>' + '<td>' + rows[i].coal + '</td>'+ '<td>' + rows[i].natural_gas + '</td>'+ '<td>' + rows[i].nuclear + '</td>'+ '<td>' + rows[i].petroleum + '</td>'+ '<td>' + rows[i].renewable + '</td>' + '<td>' + total + '</td></tr>';
+                        }
+                        console.log(list_items);
+                        response = response.replace("{{{TABLE}}}", list_items);
 
-                    res.status(200).type('html').send(response); // <-- you may need to change this
+                        res.status(200).type('html').send(response); // <-- you may need to change this
+                    }
                 });
             }
         }
@@ -147,7 +157,7 @@ app.get('/energy/:selected_energy_source', (req, res) => {
         else {
             // modify `template` and send response
             // this will require a query to the SQL database
-            let source = req.params.selected_energy_source;
+            let source = req.params.selected_energy_source.toLowerCase();
 
             if (source.toUpperCase()!='COAL' && source.toUpperCase()!='NATURAL_GAS' &&
                 source.toUpperCase()!='NUCLEAR' && source.toUpperCase()!='PETROLEUM' &&
@@ -155,24 +165,24 @@ app.get('/energy/:selected_energy_source', (req, res) => {
                 res.status(404).send('Error: no data for source ' + source);
             }
 
-            else
-            {
+            else {
 
                 let response = template.replace("{{{TOPENERGY}}}", source);
 
-                db.all('SELECT year, state_abbreviation, ? FROM Consumption ORDER BY year ASC', [req.params.selected_energy_source], (err, rows) => {
+                db.all('SELECT year, state_abbreviation, ? FROM Consumption ORDER BY year ASC', [source], (err, rows) => {
                     if (err) {
-                        console.log(err);
+                        res.status(404).send('Error: data not found');
                     }
                     else {
                         console.log(rows);
                         let i;
-                        let list_items = '';
-                        for(i = 0; i < rows.length; i++) {
-                            list_items += '<tr><th>' + rows[i].year + '</th>' + '<th>' + rows[i].state_abbreviation + '</th></tr>';
+                        let list_items1 = '';
+                        for(i = 0; i < 51; i++) {
+                            list_items1 += '<th>' + rows[i].state_abbreviation + '</th>';
                         }
-                        console.log(list_items);
-                        response = response.replace("{{{TABLE}}}", list_items);
+                        //console.log(list_items);
+                        response = response.replace("{{{TABLEH}}}", list_items1);
+                        response = response.replace("{{{TABLEC}}}", '');
 
                         res.status(200).type('html').send(response); // <-- you may need to change this
                     }
