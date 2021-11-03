@@ -54,20 +54,36 @@ app.get('/year/:selected_year', (req, res) => {
             else {
 
                 let response = template.replace("{{{TOPYEAR}}}", year);
+                response = response.replace("{{{YEAR}}}", year);
 
                 db.all('SELECT state_abbreviation, coal, natural_gas, nuclear, petroleum, renewable FROM Consumption WHERE year = ?', [req.params.selected_year], (err, rows) => {
                     if (err) {
                         res.status(404).send('Error: data not found');
                     }
                     else {
-                        console.log(rows);
                         let i;
                         let list_items = '';
+                        let totalcoal = 0;
+                        let totalnatgas = 0;
+                        let totalnuclear = 0;
+                        let totalpetrol = 0;
+                        let totalrenewable = 0;
+                        let finaltotal = 0;
                         for(i = 0; i < rows.length; i++) {
                             var total = parseInt(rows[i].coal) + parseInt(rows[i].natural_gas) + parseInt(rows[i].nuclear) + parseInt(rows[i].petroleum) + parseInt(rows[i].renewable);
+                            totalcoal += parseInt(rows[i].coal);
+                            totalnatgas += parseInt(rows[i].natural_gas);
+                            totalnuclear += parseInt(rows[i].nuclear);
+                            totalpetrol += parseInt(rows[i].petroleum);
+                            totalrenewable += parseInt(rows[i].renewable);
+                            finaltotal += total
                             list_items += '<tr><td>' + rows[i].state_abbreviation + '</td>' + '<td>' + rows[i].coal + '</td>'+ '<td>' + rows[i].natural_gas + '</td>'+ '<td>' + rows[i].nuclear + '</td>'+ '<td>' + rows[i].petroleum + '</td>'+ '<td>' + rows[i].renewable + '</td>' + '<td>' + total + '</td></tr>';
                         }
-                        console.log(list_items);
+                        response = response.replace("{{{COAL_COUNT}}}", (totalcoal/finaltotal)*100);
+                        response = response.replace("{{{NATURAL_GAS_COUNT}}}", (totalnatgas/finaltotal)*100);
+                        response = response.replace("{{{NUCLEAR_COUNT}}}", (totalnuclear/finaltotal)*100);
+                        response = response.replace("{{{PETROLEUM_COUNT}}}", (totalpetrol/finaltotal)*100);
+                        response = response.replace("{{{RENEWABLE_COUNT}}}", (totalrenewable/finaltotal)*100);
                         response = response.replace("{{{TABLE}}}", list_items);
 
                         res.status(200).type('html').send(response); // <-- you may need to change this

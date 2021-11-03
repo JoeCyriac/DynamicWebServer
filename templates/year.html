@@ -4,7 +4,7 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <title>US Energy Consumption</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
     <script type="application/javascript">
         // `year` and total counts for entire US => set these variables equal to appropriate value
         //   * these variables will be defined and accessible from any script loaded after this one
@@ -14,6 +14,31 @@
         var nuclear_count = {{{NUCLEAR_COUNT}}};
         var petroleum_count = {{{PETROLEUM_COUNT}}};
         var renewable_count = {{{RENEWABLE_COUNT}}};
+        
+        window.onload = function() {
+
+          var chart = new CanvasJS.Chart("chartContainer", {
+	          animationEnabled: true,
+	          title: {
+		          text: "Energy Consumption by Year - " + year
+	          },
+	          data: [{
+		          type: "pie",
+		          startAngle: 240,
+		          yValueFormatString: "##0.00\"%\"",
+		          indexLabel: "{label} {y}",
+		          dataPoints: [
+			          {y: coal_count, label: "Coal"},
+			          {y: natural_gas_count, label: "Natural Gas"},
+			          {y: nuclear_count, label: "Nuclear"},
+			          {y: petroleum_count, label: "Petroleum"},
+			          {y: renewable_count, label: "Renewable"}
+		          ]
+	          }]
+          });
+          chart.render();
+        }
+      
     </script>
   </head>
   <body>
@@ -34,5 +59,7 @@
           {{{TABLE}}}
         </tbody> 
       </table>
+      <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+      <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
   </body>
 </html>
