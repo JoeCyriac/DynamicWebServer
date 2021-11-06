@@ -109,6 +109,9 @@ app.get('/state/:selected_state', (req, res) => {
             // this will require a query to the SQL database
             let state = req.params.selected_state.toUpperCase();
 
+            //let imgName = "/images/" + state.toUpperCase() + ".png";
+            //let stateImg = document.getElementById("stateImage");
+            //stateImg.src = imgName;
 
             let stateAbrev = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID',
                 'IL', 'IN', 'IA', 'KS', 'KT', 'LA', 'MA', 'MD', 'MS', 'MI', 'MN', 'MS', 'MO', 'MT',
@@ -136,6 +139,7 @@ app.get('/state/:selected_state', (req, res) => {
 
             else {
                 let response = template.replace("{{{TOPSTATE}}}", stateName);
+
                 db.all('SELECT year, coal, natural_gas, nuclear, petroleum, renewable FROM Consumption WHERE state_abbreviation = ? ORDER BY year ASC', [state], (err, rows) => {
                     if (err) {
                         res.status(404).send('Error: data not found');
@@ -175,6 +179,7 @@ app.get('/energy/:selected_energy_source', (req, res) => {
             // this will require a query to the SQL database
             let source = req.params.selected_energy_source.toLowerCase();
 
+
             if (source.toUpperCase()!='COAL' && source.toUpperCase()!='NATURAL_GAS' &&
                 source.toUpperCase()!='NUCLEAR' && source.toUpperCase()!='PETROLEUM' &&
                 source.toUpperCase()!='RENEWABLE'){
@@ -184,8 +189,12 @@ app.get('/energy/:selected_energy_source', (req, res) => {
             else {
 
                 let response = template.replace("{{{TOPENERGY}}}", source);
+                
+                let imgEName = "/images/" + source + ".png";
+                let energyImg = document.getElementById("energyImage");
+                energyImg.src = imgEName;
 
-                db.all('SELECT year, state_abbreviation, ? FROM Consumption ORDER BY year ASC', [source], (err, rows) => {
+                db.all('SELECT year, state_abbreviation, ' + source + ' FROM Consumption ORDER BY year ASC', (err, rows) => {
                     if (err) {
                         res.status(404).send('Error: data not found');
                     }
@@ -193,12 +202,43 @@ app.get('/energy/:selected_energy_source', (req, res) => {
                         console.log(rows);
                         let i;
                         let list_items1 = '';
+                        let list_items2 = '';
+                        let x = 0;
                         for(i = 0; i < 51; i++) {
                             list_items1 += '<th>' + rows[i].state_abbreviation + '</th>';
                         }
-                        //console.log(list_items);
+
+                        for(i = 0; i < rows.length; i++) {
+                            list_items2 += '<tr><td>' + rows[i].year + '</td>';
+                            for(j = x; j < x + 51; j++) {
+                                if (source == 'coal') {
+                                    list_items2 += '<td>' + rows[j].coal + '</td>';
+                                } 
+                                
+                                else if (source == 'natural_gas') {
+                                    list_items2 += '<td>' + rows[j].natural_gas + '</td>';
+                                } 
+                                
+                                else if (source == 'nuclear') {
+                                    list_items2 += '<td>' + rows[j].nuclear + '</td>';
+                                } 
+                                
+                                else if (source == 'petroleum') {
+                                    list_items2 += '<td>' + rows[j].petroleum + '</td>';
+                                } 
+                                
+                                else if (source == 'renewable') {
+                                    list_items2 += '<td>' + rows[j].renewable + '</td>';
+                                }
+                            }
+                            list_items2 += '</tr>'
+                            i += 51;
+                            x += 51;
+                        }
+
+                        console.log(source);
                         response = response.replace("{{{TABLEH}}}", list_items1);
-                        response = response.replace("{{{TABLEC}}}", '');
+                        response = response.replace("{{{TABLEC}}}", list_items2);
 
                         res.status(200).type('html').send(response); // <-- you may need to change this
                     }
