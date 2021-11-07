@@ -16,6 +16,37 @@
 </head>
 
 <body>
+    <button type="button" class="button" data-toggle="offCanvas">STATE</button>
+    <div class="off-canvas position-top" id="offCanvas" data-off-canvas>
+        <ul class="menu vertical">
+            <li><a href="index.html" target="_self">HOME PAGE</a></li>
+            <li><a href="projects.html" target="_self">PROJECTS</a></li>
+            <li><a href="resume.html" target="_self">RESUME</a></li>
+            <li><a href="fun.html" target="_self">FOR FUN</a></li>
+        </ul>
+    </div
+    ><button type="button" class="button" data-toggle="offCanvas">YEAR</button>
+    <div class="off-canvas position-top" id="offCanvas" data-off-canvas>
+        <ul class="menu vertical">
+            <li><a href="index.html" target="_self">HOME PAGE</a></li>
+            <li><a href="projects.html" target="_self">PROJECTS</a></li>
+            <li><a href="resume.html" target="_self">RESUME</a></li>
+            <li><a href="fun.html" target="_self">FOR FUN</a></li>
+        </ul>
+    </div>
+    <button type="button" class="button" data-toggle="offCanvas">ENERGY SOURCE</button>
+    <div class="off-canvas position-top" id="offCanvas" data-off-canvas>
+        <ul class="menu vertical">
+            <li><a href="/coal" target="_self">Coal</a></li>
+            <li><a href="/natural_gas" target="_self">Natural Gas</a></li>
+            <li><a href="/nuclear" target="_self">Nuclear</a></li>
+            <li><a href="/petroleum" target="_self">Petroleum</a></li>
+            <li><a href="/renewable" target="_self">Renewable</a></li>
+        </ul>
+    </div>
+
+
+
     <div class="grid-y">
         <div class="grid-x grid-padding-x grid-padding-x">
             <div class="cell small-auto medium-5 center">
@@ -40,6 +71,17 @@
                 {{{TABLEC}}}
             </tbody>
         </table>
+        
+        <a href="{{{PREV}}}" class="previous">&laquo; Previous</a>
+        <a href="{{{NEXT}}}" class="next">Next &raquo;</a>
+
+<!--
+        <script src="js/jquery-3.6.0.min.js"></script>
+        <script src="js/foundation.js"></script>
+        <script type="application/javascript">
+            $(document).foundation();
+        </script>
+    -->
 </body>
 
 </html>

@@ -61,6 +61,20 @@ app.get('/year/:selected_year', (req, res) => {
                 let response = template.replace("{{{TOPYEAR}}}", year);
                 response = response.replace("{{{YEAR}}}", year);
 
+
+                let prevYear = parseInt(year)-1;
+                let nextYear = parseInt(year)+1;
+                
+                if (year == 1960){
+                    prevYear = 2018;
+                } 
+                if (year == 2018){
+                    nextYear = 1960;
+                }
+
+                response = response.replace("{{{PREV}}}", "/year/" + prevYear);
+                response = response.replace("{{{NEXT}}}", "/year/" + nextYear);
+
                 db.all('SELECT state_abbreviation, coal, natural_gas, nuclear, petroleum, renewable FROM Consumption WHERE year = ?', [req.params.selected_year], (err, rows) => {
                     if (err) {
                         res.status(404).send('Error: data not found');
@@ -129,9 +143,11 @@ app.get('/state/:selected_state', (req, res) => {
                 'Wisconsin', 'Wyoming', 'Washington D.C.'];
             let i;
             stateName = '';
+            stateIndex = '';
             for (i=0; i<51; i++){
                 if (stateAbrev[i].toUpperCase()==state){
                     stateName = stateFull[i];
+                    stateIndex = i;
                     break;
                 }
             }
@@ -142,6 +158,17 @@ app.get('/state/:selected_state', (req, res) => {
 
             else {
                 let response = template.replace("{{{TOPSTATE}}}", stateName);
+
+                let prevStateIndex = stateIndex-1;
+                let nextStateIndex = stateIndex+1;
+                if (stateIndex == 0){
+                    prevStateIndex = stateAbrev.length-1;
+                } 
+                if (stateIndex == stateAbrev.length-1){
+                    nextStateIndex = 0;
+                } 
+                response = response.replace("{{{PREV}}}", "/state/" + stateAbrev[prevStateIndex]);
+                response = response.replace("{{{NEXT}}}", "/state/" + stateAbrev[nextStateIndex]);
 
                 db.all('SELECT year, coal, natural_gas, nuclear, petroleum, renewable FROM Consumption WHERE state_abbreviation = ? ORDER BY year ASC', [state], (err, rows) => {
                     if (err) {
@@ -184,6 +211,15 @@ app.get('/energy/:selected_energy_source', (req, res) => {
             // this will require a query to the SQL database
             let source = req.params.selected_energy_source.toLowerCase();
 
+            let energyList = ['coal', 'natural_gas', 'nuclear', 'petroleum', 'renewable'];
+            let sourceIndex = '';
+            let i ;
+            for (i = 0; i < energyList.length; i++) {
+                if (source == energyList[i]){
+                    sourceIndex = i;
+                    break;
+                }
+            }
 
             if (source.toUpperCase()!='COAL' && source.toUpperCase()!='NATURAL_GAS' &&
                 source.toUpperCase()!='NUCLEAR' && source.toUpperCase()!='PETROLEUM' &&
@@ -196,6 +232,17 @@ app.get('/energy/:selected_energy_source', (req, res) => {
                 let response = template.replace("{{{TOPENERGY}}}", capitalizeFirstLetter(source));
                 
                 response = response.replace("{{{ENERGYIMG}}}", "/images/" + source + ".jpg")
+                let prevSourceIndex = sourceIndex-1;
+                let nextSourceIndex = sourceIndex+1;
+                if (sourceIndex == 0){
+                    prevSourceIndex = energyList.length-1;
+                } 
+                if (sourceIndex == energyList.length-1){
+                    nextSourceIndex = 0;
+                }
+
+                response = response.replace("{{{PREV}}}", "/energy/" + energyList[prevSourceIndex]);
+                response = response.replace("{{{NEXT}}}", "/energy/" + energyList[nextSourceIndex]);
 
                 db.all('SELECT year, state_abbreviation, ' + source + ' FROM Consumption ORDER BY year ASC', (err, rows) => {
                     if (err) {
