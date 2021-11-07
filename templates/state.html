@@ -16,10 +16,95 @@
     var nuclear_counts = {{{ NUCLEAR_COUNTS }}};         // array - value per year (e.g. [1234, 2567, ...])
     var petroleum_counts = {{{ PETROLEUM_COUNTS }}};     // array - value per year (e.g. [1234, 2567, ...])
     var renewable_counts = {{{ RENEWABLE_COUNTS }}};     // array - value per year (e.g. [1234, 2567, ...])
+
+    window.onload = function () {
+            var chart = new CanvasJS.Chart("chartContainer", {
+	              animationEnabled: true,
+	              title:{
+                  text: "Energy Consumption by State - " + state
+	              },
+	              axisX:{
+		                title: "Year",
+		                minimum: 1960,
+		                maximum: 2018
+	              },
+	              axisY:{
+		                title: "Percentage"
+	              },
+	              toolTip:{
+		                shared: true
+	              },
+	              data: [{
+		                type: "stackedArea100",
+		                name: "Coal",
+		                showInLegend: "true",
+		                dataPoints: [
+			                  {y: coal_counts}
+		                ]
+	              },
+                {
+		                type: "stackedArea100",
+		                name: "Natural Gas",
+		                showInLegend: "true",
+		                dataPoints: [
+			                  {y: natural_gas_counts}
+		                ]
+	              },
+                {
+		                type: "stackedArea100",
+		                name: "Nuclear",
+		                showInLegend: "true",
+		                dataPoints: [
+			                  {y: nuclear_counts}
+		                ]
+	              },
+                {
+		                type: "stackedArea100",
+		                name: "Petroleum",
+		                showInLegend: "true",
+		                dataPoints: [
+			                  {y: petroleum_counts}
+		                ]
+	              },
+                {
+		                type: "stackedArea100",
+		                name: "Renewable",
+		                showInLegend: "true",
+		                dataPoints: [
+			                  {y: renewable_counts}
+		                ]
+	              }]
+            });
+            chart.render();
+        }
   </script>
 </head>
 
-<body>
+<body><button type="button" class="button" href="/year/2018">HOME</button>
+  <button type="button" class="button" data-toggle="offCanvas">STATE</button>
+  <div class="off-canvas position-top" id="offCanvas" data-off-canvas>
+      <ul class="menu vertical">
+          {{{STATE_BUTTONS}}}
+
+      </ul>
+  </div><button type="button" class="button" data-toggle="offCanvas">YEAR</button>
+  <div class="off-canvas position-top" id="offCanvas" data-off-canvas>
+      <ul class="menu vertical">
+          {{{YEAR_BUTTONS}}}
+      </ul>
+  </div>
+  <button type="button" class="button" data-toggle="offCanvas">ENERGY SOURCE</button>
+  <div class="off-canvas position-top" id="offCanvas" data-off-canvas>
+      <ul class="menu vertical">
+          <li><a href="/coal" target="_self">Coal</a></li>
+          <li><a href="/natural_gas" target="_self">Natural Gas</a></li>
+          <li><a href="/nuclear" target="_self">Nuclear</a></li>
+          <li><a href="/petroleum" target="_self">Petroleum</a></li>
+          <li><a href="/renewable" target="_self">Renewable</a></li>
+      </ul>
+  </div>
+
+
   <h1 class="center">{{{TOPSTATE}}}</h1>
   <img class="imgcenter" src="{{{STATEIMG}}}" width="450" height="200" alt="Image of state" />
   <br>
@@ -41,6 +126,17 @@
       </tbody>
     </table>
   </div>
-</body>
+  <a href="{{{PREV}}}" class="previous">&laquo; Previous</a>
+  <a href="{{{NEXT}}}" class="next">Next &raquo;</a>
+  <br>
 
+  <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+  <script src="../js/jquery-3.6.0.min.js"></script>
+  <script src="../js/vendor.js"></script>
+  <script src="../js/foundation.js"></script>
+  <script type="application/javascript">
+      $(document).foundation();
+  </script>
+</body>
 </html>

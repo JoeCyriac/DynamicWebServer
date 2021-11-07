@@ -42,7 +42,31 @@
       
     </script>
   </head>
-  <body>
+  <body><button type="button" class="button" href="/year/2018">HOME</button>
+    <button type="button" class="button" data-toggle="offCanvas">STATE</button>
+    <div class="off-canvas position-top" id="offCanvas" data-off-canvas>
+        <ul class="menu vertical">
+            {{{STATE_BUTTONS}}}
+
+        </ul>
+    </div><button type="button" class="button" data-toggle="offCanvas">YEAR</button>
+    <div class="off-canvas position-top" id="offCanvas" data-off-canvas>
+        <ul class="menu vertical">
+            {{{YEAR_BUTTONS}}}
+        </ul>
+    </div>
+    <button type="button" class="button" data-toggle="offCanvas">ENERGY SOURCE</button>
+    <div class="off-canvas position-top" id="offCanvas" data-off-canvas>
+        <ul class="menu vertical">
+            <li><a href="/coal" target="_self">Coal</a></li>
+            <li><a href="/natural_gas" target="_self">Natural Gas</a></li>
+            <li><a href="/nuclear" target="_self">Nuclear</a></li>
+            <li><a href="/petroleum" target="_self">Petroleum</a></li>
+            <li><a href="/renewable" target="_self">Renewable</a></li>
+        </ul>
+    </div>
+
+
     <h1 class="center">{{{TOPYEAR}}}</h1>
     <div class="grid-container">
     <table>
@@ -62,7 +86,18 @@
         </tbody> 
       </table>
     </div>
-      <div id="chartContainer" style="height: 350px; width: 100%;"></div>
+      <div id="chartContainer" style="height: 350px; width: 100%;"></div> 
+      <a href="{{{PREV}}}" class="previous">&laquo; Previous</a>
+      <a href="{{{NEXT}}}" class="next">Next &raquo;</a>
+
       <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-  </body>
+      <script src="../js/jquery-3.6.0.min.js"></script>
+      <script src="../js/vendor.js"></script>
+      <script src="../js/foundation.js"></script>
+      <script type="application/javascript">
+          $(document).foundation();
+      </script>
+
+      <br>
+    </body>
 </html>
