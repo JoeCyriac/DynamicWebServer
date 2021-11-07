@@ -12,26 +12,51 @@
         //   * these variables will be defined and accessible from any script loaded after this one
         var energy_type = {{{ ENERGY_TYPE }}};
         var energy_counts = {{{ ENERGY_COUNTS }}}; // dictionary of arrays (e.g. {AK: [...], AL: [...], AR: [...], ...})
+        window.onload = function () {
+
+            var chart = new CanvasJS.Chart("chartContainer", {
+                animationEnabled: true,
+                theme: "light2",
+                title: {
+                    text: "Simple Line Chart"
+                },
+                data: [{
+                    type: "line",
+                    indexLabelFontSize: 16,
+                    dataPoints: [
+                        { y: 450 },
+                        { y: 414 },
+                        { y: 520, indexLabel: "\u2191 highest", markerColor: "red", markerType: "triangle" },
+                        { y: 460 },
+                        { y: 450 },
+                        { y: 500 },
+                        { y: 480 },
+                        { y: 480 },
+                        { y: 410, indexLabel: "\u2193 lowest", markerColor: "DarkSlateGrey", markerType: "cross" },
+                        { y: 500 },
+                        { y: 480 },
+                        { y: 510 }
+                    ]
+                }]
+            });
+            chart.render();
+
+        }
     </script>
 </head>
 
 <body>
+    <button type="button" class="button" href="/year/2018">HOME</button>
     <button type="button" class="button" data-toggle="offCanvas">STATE</button>
     <div class="off-canvas position-top" id="offCanvas" data-off-canvas>
         <ul class="menu vertical">
-            <li><a href="index.html" target="_self">HOME PAGE</a></li>
-            <li><a href="projects.html" target="_self">PROJECTS</a></li>
-            <li><a href="resume.html" target="_self">RESUME</a></li>
-            <li><a href="fun.html" target="_self">FOR FUN</a></li>
+            {{{STATE_BUTTONS}}}
+
         </ul>
-    </div
-    ><button type="button" class="button" data-toggle="offCanvas">YEAR</button>
+    </div><button type="button" class="button" data-toggle="offCanvas">YEAR</button>
     <div class="off-canvas position-top" id="offCanvas" data-off-canvas>
         <ul class="menu vertical">
-            <li><a href="index.html" target="_self">HOME PAGE</a></li>
-            <li><a href="projects.html" target="_self">PROJECTS</a></li>
-            <li><a href="resume.html" target="_self">RESUME</a></li>
-            <li><a href="fun.html" target="_self">FOR FUN</a></li>
+            {{{YEAR_BUTTONS}}}
         </ul>
     </div>
     <button type="button" class="button" data-toggle="offCanvas">ENERGY SOURCE</button>
@@ -46,7 +71,6 @@
     </div>
 
 
-
     <div class="grid-y">
         <div class="grid-x grid-padding-x grid-padding-x">
             <div class="cell small-auto medium-5 center">
@@ -59,29 +83,32 @@
             </div>
         </div>
     </div>
-        <br>
-        <table>
-            <thead>
-                <tr>
-                    <th>Year</th>
-                    {{{TABLEH}}}
-                </tr>
-            </thead>
-            <tbody>
-                {{{TABLEC}}}
-            </tbody>
-        </table>
-        
-        <a href="{{{PREV}}}" class="previous">&laquo; Previous</a>
-        <a href="{{{NEXT}}}" class="next">Next &raquo;</a>
+    <br>
+    <table>
+        <thead>
+            <tr>
+                <th>Year</th>
+                {{{TABLEH}}}
+            </tr>
+        </thead>
+        <tbody>
+            {{{TABLEC}}}
+        </tbody>
+    </table>
 
-<!--
-        <script src="js/jquery-3.6.0.min.js"></script>
-        <script src="js/foundation.js"></script>
-        <script type="application/javascript">
-            $(document).foundation();
-        </script>
-    -->
+    <a href="{{{PREV}}}" class="previous">&laquo; Previous</a>
+    <a href="{{{NEXT}}}" class="next">Next &raquo;</a>
+    <br>
+
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script src="../js/vendor.js"></script>
+    <script src="../js/foundation.js"></script>
+    <script type="application/javascript">
+        $(document).foundation();
+    </script>
+    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
 </body>
 
 </html>

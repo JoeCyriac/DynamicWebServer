@@ -61,7 +61,7 @@ app.get('/year/:selected_year', (req, res) => {
                 let response = template.replace("{{{TOPYEAR}}}", year);
                 response = response.replace("{{{YEAR}}}", year);
 
-
+                
                 let prevYear = parseInt(year)-1;
                 let nextYear = parseInt(year)+1;
                 
@@ -131,7 +131,7 @@ app.get('/state/:selected_state', (req, res) => {
         
 
             let stateAbrev = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID',
-                'IL', 'IN', 'IA', 'KS', 'KT', 'LA', 'MA', 'MD', 'MS', 'MI', 'MN', 'MS', 'MO', 'MT',
+                'IL', 'IN', 'IA', 'KS', 'KT', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT',
                 'NB', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
                 'SD', 'TN', 'TX', 'UT', 'VT', 'VI', 'WA', 'WV', 'WI', 'WY', 'DC'];
             let stateFull = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut',
