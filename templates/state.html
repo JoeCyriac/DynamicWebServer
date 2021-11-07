@@ -1,41 +1,46 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <title>US Energy Consumption</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/foundation.css">
-    <script type="application/javascript">
-        // `state` and arrays of consumption per year => set these variables equal to appropriate value
-        //   * these variables will be defined and accessible from any script loaded after this one
-        var state = {{{STATE}}};
-        var coal_counts = {{{COAL_COUNTS}}};               // array - value per year (e.g. [1234, 2567, ...])
-        var natural_gas_counts = {{{NATURAL_GAS_COUNTS}}}; // array - value per year (e.g. [1234, 2567, ...])
-        var nuclear_counts = {{{NUCLEAR_COUNTS}}};         // array - value per year (e.g. [1234, 2567, ...])
-        var petroleum_counts = {{{PETROLEUM_COUNTS}}};     // array - value per year (e.g. [1234, 2567, ...])
-        var renewable_counts = {{{RENEWABLE_COUNTS}}};     // array - value per year (e.g. [1234, 2567, ...])
-    </script>
-  </head>
-  <body >
-    <h1>{{{TOPSTATE}}}</h1>
-    <img id="stateImage" src="" width="600" height="300" alt="Image of state"/>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>US Energy Consumption</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/foundation.css">
+  <script type="application/javascript">
+    // `state` and arrays of consumption per year => set these variables equal to appropriate value
+    //   * these variables will be defined and accessible from any script loaded after this one
+    var state = {{{ STATE }}};
+    var coal_counts = {{{ COAL_COUNTS }}};               // array - value per year (e.g. [1234, 2567, ...])
+    var natural_gas_counts = {{{ NATURAL_GAS_COUNTS }}}; // array - value per year (e.g. [1234, 2567, ...])
+    var nuclear_counts = {{{ NUCLEAR_COUNTS }}};         // array - value per year (e.g. [1234, 2567, ...])
+    var petroleum_counts = {{{ PETROLEUM_COUNTS }}};     // array - value per year (e.g. [1234, 2567, ...])
+    var renewable_counts = {{{ RENEWABLE_COUNTS }}};     // array - value per year (e.g. [1234, 2567, ...])
+  </script>
+</head>
+
+<body>
+  <h1 class="center">{{{TOPSTATE}}}</h1>
+  <img class="imgcenter" src="{{{STATEIMG}}}" width="450" height="200" alt="Image of state" />
+  <br>
+  <div class="grid-container">
     <table>
-        <thead>
-          <tr>
-            <th>Year</th>
-            <th>Coal</th> 
-            <th>Natural Gas</th>
-            <th>Nuclear</th> 
-            <th>Petroleum</th>
-            <th>Renewable</th>
-            <th>Total</th>
-          </tr> 
-        </thead>
-        <tbody>
-          {{{TABLE}}}
-        </tbody>
-      </table>
-      
-  </body>
+      <thead>
+        <tr>
+          <th class="center">Year</th>
+          <th class="center">Coal</th>
+          <th class="center">Natural Gas</th>
+          <th class="center">Nuclear</th>
+          <th class="center">Petroleum</th>
+          <th class="center">Renewable</th>
+          <th class="center">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{{TABLE}}}
+      </tbody>
+    </table>
+  </div>
+</body>
+
 </html>

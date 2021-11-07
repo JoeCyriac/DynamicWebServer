@@ -34,6 +34,11 @@ app.get('/', (req, res) => {
     res.redirect('/year/2018');
 });
 
+// Helper function to capitalize the first letter
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
 // GET request handler for '/year/*'
 app.get('/year/:selected_year', (req, res) => {
     console.log(req.params.selected_year);
@@ -109,9 +114,7 @@ app.get('/state/:selected_state', (req, res) => {
             // this will require a query to the SQL database
             let state = req.params.selected_state.toUpperCase();
 
-            //let imgName = "/images/" + state.toUpperCase() + ".png";
-            //let stateImg = document.getElementById("stateImage");
-            //stateImg.src = imgName;
+        
 
             let stateAbrev = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID',
                 'IL', 'IN', 'IA', 'KS', 'KT', 'LA', 'MA', 'MD', 'MS', 'MI', 'MN', 'MS', 'MO', 'MT',
@@ -145,14 +148,16 @@ app.get('/state/:selected_state', (req, res) => {
                         res.status(404).send('Error: data not found');
                     }
                     else {    
-                        console.log(rows);
+                    
                         let i;
                         let list_items = '';
+                        response = response.replace("{{{STATEIMG}}}", "/images/" + state.toUpperCase() + ".png")
+                        console.log("/images/" + state.toUpperCase() + ".png");
+
                         for(i = 0; i < rows.length; i++) {
                             var total = parseInt(rows[i].coal) + parseInt(rows[i].natural_gas) + parseInt(rows[i].nuclear) + parseInt(rows[i].petroleum) + parseInt(rows[i].renewable);
                             list_items += '<tr><td>' + rows[i].year + '</td>' + '<td>' + rows[i].coal + '</td>'+ '<td>' + rows[i].natural_gas + '</td>'+ '<td>' + rows[i].nuclear + '</td>'+ '<td>' + rows[i].petroleum + '</td>'+ '<td>' + rows[i].renewable + '</td>' + '<td>' + total + '</td></tr>';
                         }
-                        console.log(list_items);
                         response = response.replace("{{{TABLE}}}", list_items);
 
                         res.status(200).type('html').send(response); // <-- you may need to change this
@@ -188,18 +193,15 @@ app.get('/energy/:selected_energy_source', (req, res) => {
 
             else {
 
-                let response = template.replace("{{{TOPENERGY}}}", source);
+                let response = template.replace("{{{TOPENERGY}}}", capitalizeFirstLetter(source));
                 
-                let imgEName = "/images/" + source + ".png";
-                let energyImg = document.getElementById("energyImage");
-                energyImg.src = imgEName;
+                response = response.replace("{{{ENERGYIMG}}}", "/images/" + source + ".jpg")
 
                 db.all('SELECT year, state_abbreviation, ' + source + ' FROM Consumption ORDER BY year ASC', (err, rows) => {
                     if (err) {
                         res.status(404).send('Error: data not found');
                     }
                     else {
-                        console.log(rows);
                         let i;
                         let list_items1 = '';
                         let list_items2 = '';
@@ -236,7 +238,6 @@ app.get('/energy/:selected_energy_source', (req, res) => {
                             x += 51;
                         }
 
-                        console.log(source);
                         response = response.replace("{{{TABLEH}}}", list_items1);
                         response = response.replace("{{{TABLEC}}}", list_items2);
 
