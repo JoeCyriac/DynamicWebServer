@@ -80,7 +80,8 @@
   </script>
 </head>
 
-<body><button type="button" class="button" href="/year/2018">HOME</button>
+<body>
+  <button type="button" class="button" href="/year/2018">HOME</button>
   <button type="button" class="button" data-toggle="offCanvas">STATE</button>
   <div class="off-canvas position-top" id="offCanvas" data-off-canvas>
       <ul class="menu vertical">
@@ -126,11 +127,11 @@
       </tbody>
     </table>
   </div>
+  <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+  <br><br>
   <a href="{{{PREV}}}" class="previous">&laquo; Previous</a>
   <a href="{{{NEXT}}}" class="next">Next &raquo;</a>
-  <br>
-
-  <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+  <br><br>
   <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
   <script src="../js/jquery-3.6.0.min.js"></script>
   <script src="../js/vendor.js"></script>
