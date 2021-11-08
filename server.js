@@ -14,6 +14,19 @@ let db_filename = path.join(__dirname, 'db', 'usenergy.sqlite3');
 let app = express();
 let port = 8000;
 
+//declare global arrays for state abbreviations and names
+let stateAbrev = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID',
+                'IL', 'IN', 'IA', 'KS', 'KT', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT',
+                'NB', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
+                'SD', 'TN', 'TX', 'UT', 'VT', 'VI', 'WA', 'WV', 'WI', 'WY', 'DC'];
+let stateFull = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut',
+                'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
+                'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri',
+                'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina',
+                'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina',
+                'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia',
+                'Wisconsin', 'Wyoming', 'Washington D.C.'];
+
 
 // Open usenergy.sqlite3 database
 let db = new sqlite3.Database(db_filename, sqlite3.OPEN_READONLY, (err) => {
@@ -130,17 +143,7 @@ app.get('/state/:selected_state', (req, res) => {
 
         
 
-            let stateAbrev = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID',
-                'IL', 'IN', 'IA', 'KS', 'KT', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT',
-                'NB', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
-                'SD', 'TN', 'TX', 'UT', 'VT', 'VI', 'WA', 'WV', 'WI', 'WY', 'DC'];
-            let stateFull = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut',
-                'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
-                'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri',
-                'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina',
-                'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina',
-                'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia',
-                'Wisconsin', 'Wyoming', 'Washington D.C.'];
+            
             let i;
             stateName = '';
             stateIndex = '';
@@ -158,6 +161,7 @@ app.get('/state/:selected_state', (req, res) => {
 
             else {
                 let response = template.replace("{{{TOPSTATE}}}", stateName);
+                response = response.replace("{{{STATE}}}", state);
 
                 let prevStateIndex = stateIndex-1;
                 let nextStateIndex = stateIndex+1;
@@ -177,14 +181,56 @@ app.get('/state/:selected_state', (req, res) => {
                     else {    
                     
                         let i;
+                        let year_array = new Array();
+                        let coal_array = new Array();
+                        let coal_datastring = '';
+                        let natural_gas_array = new Array();
+                        let ng_datastring = '';
+                        let nuclear_array = new Array();
+                        let nuclear_datastring = '';
+                        let petroleum_array = new Array();
+                        let petroleum_datastring = '';
+                        let renewable_array = new Array();
+                        let renewable_datastring = '';
                         let list_items = '';
                         response = response.replace("{{{STATEIMG}}}", "/images/" + state.toUpperCase() + ".png")
                         console.log("/images/" + state.toUpperCase() + ".png");
 
                         for(i = 0; i < rows.length; i++) {
+                            year_array[i] = rows[i].year;
+                            coal_array[i] = rows[i].coal;
+                            natural_gas_array[i] = rows[i].natural_gas;
+                            nuclear_array[i] = rows[i].nuclear;
+                            petroleum_array[i] = rows[i].petroleum;
+                            renewable_array[i] = rows[i].renewable;
                             var total = parseInt(rows[i].coal) + parseInt(rows[i].natural_gas) + parseInt(rows[i].nuclear) + parseInt(rows[i].petroleum) + parseInt(rows[i].renewable);
                             list_items += '<tr><td>' + rows[i].year + '</td>' + '<td>' + rows[i].coal + '</td>'+ '<td>' + rows[i].natural_gas + '</td>'+ '<td>' + rows[i].nuclear + '</td>'+ '<td>' + rows[i].petroleum + '</td>'+ '<td>' + rows[i].renewable + '</td>' + '<td>' + total + '</td></tr>';
                         }
+
+                        for(i = 0; i < rows.length; i++) {
+                            if(i == rows.length - 1)
+                            {
+                                coal_datastring = coal_datastring + "{y: " + coal_array[i] + ", label: " + year_array[i] + "}";
+                                ng_datastring = ng_datastring + "{y: " + natural_gas_array[i] + ", label: " + year_array[i] + "}";
+                                nuclear_datastring = nuclear_datastring + "{y: " + nuclear_array[i] + ", label: " + year_array[i] + "},";
+                                petroleum_datastring = petroleum_datastring + "{y: " + petroleum_array[i] + ", label: " + year_array[i] + "}";
+                                renewable_datastring = renewable_datastring + "{y: " + renewable_array[i] + ", label: " + year_array[i] + "}";
+                            }
+                            else
+                            {
+                                coal_datastring = coal_datastring + "{y: " + coal_array[i] + ", label: " + year_array[i] + "},";
+                                ng_datastring = ng_datastring + "{y: " + natural_gas_array[i] + ", label: " + year_array[i] + "},";
+                                nuclear_datastring = nuclear_datastring + "{y: " + nuclear_array[i] + ", label: " + year_array[i] + "},";
+                                petroleum_datastring = petroleum_datastring + "{y: " + petroleum_array[i] + ", label: " + year_array[i] + "},";
+                                renewable_datastring = renewable_datastring + "{y: " + renewable_array[i] + ", label: " + year_array[i] + "},";
+                            }
+                        }
+
+                        response = response.replace("{{{COAL_DATA}}}", coal_datastring);
+                        response = response.replace("{{{NATURAL_GAS_DATA}}}", ng_datastring);
+                        response = response.replace("{{{NUCLEAR_DATA}}}", nuclear_datastring);
+                        response = response.replace("{{{PETROLEUM_DATA}}}", petroleum_datastring);
+                        response = response.replace("{{{RENEWABLE_DATA}}}", renewable_datastring);
                         response = response.replace("{{{TABLE}}}", list_items);
 
                         res.status(200).type('html').send(response); // <-- you may need to change this
@@ -213,7 +259,7 @@ app.get('/energy/:selected_energy_source', (req, res) => {
 
             let energyList = ['coal', 'natural_gas', 'nuclear', 'petroleum', 'renewable'];
             let sourceIndex = '';
-            let i ;
+            let i;
             for (i = 0; i < energyList.length; i++) {
                 if (source == energyList[i]){
                     sourceIndex = i;
@@ -221,19 +267,23 @@ app.get('/energy/:selected_energy_source', (req, res) => {
                 }
             }
 
-            if (source.toUpperCase()!='COAL' && source.toUpperCase()!='NATURAL_GAS' &&
-                source.toUpperCase()!='NUCLEAR' && source.toUpperCase()!='PETROLEUM' &&
-                source.toUpperCase()!='RENEWABLE'){
+            if (source != 'coal' && source != 'natural_gas' && source != 'renewable' && source != 'nuclear' && source != 'petroleum'){
+                console.log(source);
+                console.log('coal');
+                console.log('natural_gas');
+                console.log('renewable');
+                console.log('nuclear');
+                console.log('petroleum');
                 res.status(404).send('Error: no data for source ' + source);
             }
 
             else {
-
                 let response = template.replace("{{{TOPENERGY}}}", capitalizeFirstLetter(source));
-                
                 response = response.replace("{{{ENERGYIMG}}}", "/images/" + source + ".jpg")
+
                 let prevSourceIndex = sourceIndex-1;
                 let nextSourceIndex = sourceIndex+1;
+
                 if (sourceIndex == 0){
                     prevSourceIndex = energyList.length-1;
                 } 
@@ -253,8 +303,45 @@ app.get('/energy/:selected_energy_source', (req, res) => {
                         let list_items1 = '';
                         let list_items2 = '';
                         let x = 0;
+                        let year_array = new Array();
+                        let coal_array = new Array();
+                        let coal_datastring = '';
+                        let natural_gas_array = new Array();
+                        let ng_datastring = '';
+                        let nuclear_array = new Array();
+                        let nuclear_datastring = '';
+                        let petroleum_array = new Array();
+                        let petroleum_datastring = '';
+                        let renewable_array = new Array();
+                        let renewable_datastring = '';
+
                         for(i = 0; i < 51; i++) {
+                            year_array[i] = rows[i].year;
+                            coal_array[i] = rows[i].coal;
+                            natural_gas_array[i] = rows[i].natural_gas;
+                            nuclear_array[i] = rows[i].nuclear;
+                            petroleum_array[i] = rows[i].petroleum;
+                            renewable_array[i] = rows[i].renewable;
                             list_items1 += '<th>' + rows[i].state_abbreviation + '</th>';
+                        }
+
+                        for(i = 0; i < rows.length; i++) {
+                            if(i == rows.length - 1)
+                            {
+                                coal_datastring = coal_datastring + "{y: " + coal_array[i] + ", label: " + year_array[i] + "}";
+                                ng_datastring = ng_datastring + "{y: " + natural_gas_array[i] + ", label: " + year_array[i] + "}";
+                                nuclear_datastring = nuclear_datastring + "{y: " + nuclear_array[i] + ", label: " + year_array[i] + "},";
+                                petroleum_datastring = petroleum_datastring + "{y: " + petroleum_array[i] + ", label: " + year_array[i] + "}";
+                                renewable_datastring = renewable_datastring + "{y: " + renewable_array[i] + ", label: " + year_array[i] + "}";
+                            }
+                            else
+                            {
+                                coal_datastring = coal_datastring + "{y: " + coal_array[i] + ", label: " + year_array[i] + "},";
+                                ng_datastring = ng_datastring + "{y: " + natural_gas_array[i] + ", label: " + year_array[i] + "},";
+                                nuclear_datastring = nuclear_datastring + "{y: " + nuclear_array[i] + ", label: " + year_array[i] + "},";
+                                petroleum_datastring = petroleum_datastring + "{y: " + petroleum_array[i] + ", label: " + year_array[i] + "},";
+                                renewable_datastring = renewable_datastring + "{y: " + renewable_array[i] + ", label: " + year_array[i] + "},";
+                            }
                         }
 
                         for(i = 0; i < rows.length; i++) {
@@ -287,6 +374,12 @@ app.get('/energy/:selected_energy_source', (req, res) => {
 
                         response = response.replace("{{{TABLEH}}}", list_items1);
                         response = response.replace("{{{TABLEC}}}", list_items2);
+                        response = response.replace("{{{COAL_DATA}}}", coal_datastring);
+                        response = response.replace("{{{NATURAL_GAS_DATA}}}", ng_datastring);
+                        response = response.replace("{{{NUCLEAR_DATA}}}", nuclear_datastring);
+                        response = response.replace("{{{PETROLEUM_DATA}}}", petroleum_datastring);
+                        response = response.replace("{{{RENEWABLE_DATA}}}", renewable_datastring);
+                    
 
                         res.status(200).type('html').send(response); // <-- you may need to change this
                     }

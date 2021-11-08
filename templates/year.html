@@ -42,33 +42,34 @@
       
     </script>
   </head>
-  <body><button type="button" class="button" href="/year/2018">HOME</button>
-    <button type="button" class="button" data-toggle="offCanvas">STATE</button>
-    <div class="off-canvas position-top" id="offCanvas" data-off-canvas>
+  <body>
+    <a href="/year/2018" class="previous">HOME</a>
+    <button type="button" class="button" data-toggle="offCanvasState">STATE</button>
+    <div class="off-canvas position-top" id="offCanvasState" data-off-canvas>
         <ul class="menu vertical">
-            {{{STATE_BUTTONS}}}
-
-        </ul>
-    </div><button type="button" class="button" data-toggle="offCanvas">YEAR</button>
-    <div class="off-canvas position-top" id="offCanvas" data-off-canvas>
-        <ul class="menu vertical">
-            {{{YEAR_BUTTONS}}}
+            <li>{{{STATE_BUTTONS}}}</li>
         </ul>
     </div>
-    <button type="button" class="button" data-toggle="offCanvas">ENERGY SOURCE</button>
-    <div class="off-canvas position-top" id="offCanvas" data-off-canvas>
+    <button type="button" class="button" data-toggle="offCanvasYear">YEAR</button>
+    <div class="off-canvas position-top" id="offCanvasYear" data-off-canvas>
         <ul class="menu vertical">
-            <li><a href="/coal" target="_self">Coal</a></li>
-            <li><a href="/natural_gas" target="_self">Natural Gas</a></li>
-            <li><a href="/nuclear" target="_self">Nuclear</a></li>
-            <li><a href="/petroleum" target="_self">Petroleum</a></li>
-            <li><a href="/renewable" target="_self">Renewable</a></li>
+            <li>{{{YEAR_BUTTONS}}}</li>
+        </ul>
+    </div>
+    <button type="button" class="button" data-toggle="offCanvasEnergy">ENERGY SOURCE</button>
+    <div class="off-canvas position-top" id="offCanvasEnergy" data-off-canvas>
+        <ul class="menu vertical">
+          <li><a href="/energy/coal" target="_self">Coal</a></li>
+          <li><a href="/energy/natural_gas" target="_self">Natural Gas</a></li>
+          <li><a href="/energy/nuclear" target="_self">Nuclear</a></li>
+          <li><a href="/energy/petroleum" target="_self">Petroleum</a></li>
+          <li><a href="/energy/renewable" target="_self">Renewable</a></li>
         </ul>
     </div>
 
 
     <h1 class="center">{{{TOPYEAR}}}</h1>
-    <div class="grid-container">
+    <div class="grid-container" id="tableContainer">
     <table>
         <thead>
           <tr>

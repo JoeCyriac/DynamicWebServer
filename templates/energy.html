@@ -10,123 +10,94 @@
     <script type="application/javascript">
         // `energy_type` and object of consumption per year per state => set these variables equal to appropriate value
         //   * these variables will be defined and accessible from any script loaded after this one
-        var energy_type = {{{ ENERGY_TYPE }}};
-        var energy_counts = {{{ ENERGY_COUNTS }}}; // dictionary of arrays (e.g. {AK: [...], AL: [...], AR: [...], ...})
+        var energy_type = {{{ENERGY_TYPE}}};
+        var energy_counts = {{{ENERGY_COUNTS}}}; // dictionary of arrays (e.g. {AK: [...], AL: [...], AR: [...], ...})
+        
         window.onload = function () {
-
             var chart = new CanvasJS.Chart("chartContainer", {
                 animationEnabled: true,
-                theme: "light2",
                 title: {
                     text: "Energy Consumption by Resource"
                 },
                 axisX: {
-                    valueFormatString: "DD MMM",
-                    crosshair: {
-                        enabled: true,
-                        snapToDataPoint: true
-                    }
+                    title: "Year"
                 },
                 axisY: {
-                    title: "Number of Visits",
-                    includeZero: true,
-                    crosshair: {
-                        enabled: true
-                    }
+                    title: "Total Consumption"
                 },
                 toolTip: {
                     shared: true
                 },
-                legend: {
-                    cursor: "pointer",
-                    verticalAlign: "bottom",
-                    horizontalAlign: "left",
-                    dockInsidePlotArea: true,
-                    itemclick: toogleDataSeries
-                },
-                data: [{
-                    type: "line",
-                    showInLegend: true,
-                    name: "Total Visit",
-                    markerType: "square",
-                    xValueFormatString: "DD MMM, YYYY",
-                    color: "#F08080",
-                    dataPoints: [
-                        { x: new Date(2017, 0, 3), y: 650 },
-                        { x: new Date(2017, 0, 4), y: 700 },
-                        { x: new Date(2017, 0, 5), y: 710 },
-                        { x: new Date(2017, 0, 6), y: 658 },
-                        { x: new Date(2017, 0, 7), y: 734 },
-                        { x: new Date(2017, 0, 8), y: 963 },
-                        { x: new Date(2017, 0, 9), y: 847 },
-                        { x: new Date(2017, 0, 10), y: 853 },
-                        { x: new Date(2017, 0, 11), y: 869 },
-                        { x: new Date(2017, 0, 12), y: 943 },
-                        { x: new Date(2017, 0, 13), y: 970 },
-                        { x: new Date(2017, 0, 14), y: 869 },
-                        { x: new Date(2017, 0, 15), y: 890 },
-                        { x: new Date(2017, 0, 16), y: 930 }
-                    ]
-                },
-                {
-                    type: "line",
-                    showInLegend: true,
-                    name: "Unique Visit",
-                    dataPoints: [
-                        { x: new Date(2017, 0, 3), y: 510 },
-                        { x: new Date(2017, 0, 4), y: 560 },
-                        { x: new Date(2017, 0, 5), y: 540 },
-                        { x: new Date(2017, 0, 6), y: 558 },
-                        { x: new Date(2017, 0, 7), y: 544 },
-                        { x: new Date(2017, 0, 8), y: 693 },
-                        { x: new Date(2017, 0, 9), y: 657 },
-                        { x: new Date(2017, 0, 10), y: 663 },
-                        { x: new Date(2017, 0, 11), y: 639 },
-                        { x: new Date(2017, 0, 12), y: 673 },
-                        { x: new Date(2017, 0, 13), y: 660 },
-                        { x: new Date(2017, 0, 14), y: 562 },
-                        { x: new Date(2017, 0, 15), y: 643 },
-                        { x: new Date(2017, 0, 16), y: 570 }
-                    ]
-                }]
+                data: [
+                    {
+		                type: "stackedArea100",
+		                name: "Coal",
+		                showInLegend: "true",
+		                dataPoints: [
+			                  {{{COAL_DATA}}}
+		                ]
+	                },
+                    {
+		                type: "stackedArea100",
+		                name: "Natural Gas",
+		                showInLegend: "true",
+		                dataPoints: [
+			                  {{{NATURAL_GAS_DATA}}}
+		                ]
+	                },
+                    {
+		                type: "stackedArea100",
+		                name: "Nuclear",
+		                showInLegend: "true",
+		                dataPoints: [
+			                  {{{NUCLEAR_DATA}}}
+		                ]
+	                },
+                    {
+		                type: "stackedArea100",
+		                name: "Petroleum",
+		                showInLegend: "true",
+		                dataPoints: [
+			                  {{{PETROLEUM_DATA}}}
+		                ]
+	                },
+                    {
+		                type: "stackedArea100",
+		                name: "Renewable",
+		                showInLegend: "true",
+		                dataPoints: [
+			                  {{{RENEWABLE_DATA}}}
+		                ]
+	                }
+                ]
             });
+
             chart.render();
-
-            function toogleDataSeries(e) {
-                if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-                    e.dataSeries.visible = false;
-                } else {
-                    e.dataSeries.visible = true;
-                }
-                chart.render();
-            }
-
         }
     </script>
 </head>
 
 <body>
-    <button type="button" class="button" href="/year/2018">HOME</button>
-    <button type="button" class="button" data-toggle="offCanvas">STATE</button>
-    <div class="off-canvas position-top" id="offCanvas" data-off-canvas>
+    <a href="/year/2018" class="previous">HOME</a>
+    <button type="button" class="button" data-toggle="offCanvasState">STATE</button>
+    <div class="off-canvas position-top" id="offCanvasState" data-off-canvas>
         <ul class="menu vertical">
-            {{{STATE_BUTTONS}}}
-
+            <li>{{{STATE_BUTTONS}}}</li>
         </ul>
-    </div><button type="button" class="button" data-toggle="offCanvas">YEAR</button>
-    <div class="off-canvas position-top" id="offCanvas" data-off-canvas>
+    </div><button type="button" class="button" data-toggle="offCanvasYear">YEAR</button>
+    <div class="off-canvas position-top" id="offCanvasYear" data-off-canvas>
         <ul class="menu vertical">
-            {{{YEAR_BUTTONS}}}
+            <li>{{{YEAR_BUTTONS}}}</li>
         </ul>
     </div>
-    <button type="button" class="button" data-toggle="offCanvas">ENERGY SOURCE</button>
-    <div class="off-canvas position-top" id="offCanvas" data-off-canvas>
+    <button type="button" class="button" data-toggle="offCanvasEnergy">ENERGY SOURCE</button>
+    <div class="off-canvas position-top" id="offCanvasEnergy" data-off-canvas>
         <ul class="menu vertical">
-            <li><a href="/coal" target="_self">Coal</a></li>
-            <li><a href="/natural_gas" target="_self">Natural Gas</a></li>
-            <li><a href="/nuclear" target="_self">Nuclear</a></li>
-            <li><a href="/petroleum" target="_self">Petroleum</a></li>
-            <li><a href="/renewable" target="_self">Renewable</a></li>
+            <li><a href="/energy/coal" target="_self">Coal</a></li>
+            <li><a href="/energy/natural_gas" target="_self">Natural Gas</a></li>
+            <li><a href="/energy/nuclear" target="_self">Nuclear</a></li>
+            <li><a href="/energy/petroleum" target="_self">Petroleum</a></li>
+            <li><a href="/energy/renewable" target="_self">Renewable</a></li>
         </ul>
     </div>
 
@@ -144,17 +115,19 @@
         </div>
     </div>
     <br>
-    <table>
-        <thead>
-            <tr>
-                <th>Year</th>
-                {{{TABLEH}}}
-            </tr>
-        </thead>
-        <tbody>
-            {{{TABLEC}}}
-        </tbody>
-    </table>
+    <div id="tableContainer">
+        <table>
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    {{{TABLEH}}}
+                </tr>
+            </thead>
+            <tbody>
+                {{{TABLEC}}}
+            </tbody>
+        </table>
+    </div>
 
     <a href="{{{PREV}}}" class="previous">&laquo; Previous</a>
     <a href="{{{NEXT}}}" class="next">Next &raquo;</a>
@@ -166,9 +139,7 @@
     <script type="application/javascript">
         $(document).foundation();
     </script>
-<div id="chartContainer" style="height: 370px; width: 100%;"></div>
-<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-
+    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 </body>
-
 </html>

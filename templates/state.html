@@ -8,38 +8,30 @@
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/foundation.css">
   <script type="application/javascript">
-    // `state` and arrays of consumption per year => set these variables equal to appropriate value
-    //   * these variables will be defined and accessible from any script loaded after this one
-    var state = {{{ STATE }}};
-    var coal_counts = {{{ COAL_COUNTS }}};               // array - value per year (e.g. [1234, 2567, ...])
-    var natural_gas_counts = {{{ NATURAL_GAS_COUNTS }}}; // array - value per year (e.g. [1234, 2567, ...])
-    var nuclear_counts = {{{ NUCLEAR_COUNTS }}};         // array - value per year (e.g. [1234, 2567, ...])
-    var petroleum_counts = {{{ PETROLEUM_COUNTS }}};     // array - value per year (e.g. [1234, 2567, ...])
-    var renewable_counts = {{{ RENEWABLE_COUNTS }}};     // array - value per year (e.g. [1234, 2567, ...])
 
+    var state = '{{{STATE}}}';
     window.onload = function () {
             var chart = new CanvasJS.Chart("chartContainer", {
 	              animationEnabled: true,
-	              title:{
+	              title: {
                   text: "Energy Consumption by State - " + state
 	              },
-	              axisX:{
-		                title: "Year",
-		                minimum: 1960,
-		                maximum: 2018
+	              axisX: {
+		                title: "Year"
 	              },
-	              axisY:{
+	              axisY: {
 		                title: "Percentage"
 	              },
-	              toolTip:{
+	              toolTip: {
 		                shared: true
 	              },
-	              data: [{
+	              data: [
+                {
 		                type: "stackedArea100",
 		                name: "Coal",
 		                showInLegend: "true",
 		                dataPoints: [
-			                  {y: coal_counts}
+			                  {{{COAL_DATA}}}
 		                ]
 	              },
                 {
@@ -47,7 +39,7 @@
 		                name: "Natural Gas",
 		                showInLegend: "true",
 		                dataPoints: [
-			                  {y: natural_gas_counts}
+			                  {{{NATURAL_GAS_DATA}}}
 		                ]
 	              },
                 {
@@ -55,7 +47,7 @@
 		                name: "Nuclear",
 		                showInLegend: "true",
 		                dataPoints: [
-			                  {y: nuclear_counts}
+			                  {{{NUCLEAR_DATA}}}
 		                ]
 	              },
                 {
@@ -63,7 +55,7 @@
 		                name: "Petroleum",
 		                showInLegend: "true",
 		                dataPoints: [
-			                  {y: petroleum_counts}
+			                  {{{PETROLEUM_DATA}}}
 		                ]
 	              },
                 {
@@ -71,7 +63,7 @@
 		                name: "Renewable",
 		                showInLegend: "true",
 		                dataPoints: [
-			                  {y: renewable_counts}
+			                  {{{RENEWABLE_DATA}}}
 		                ]
 	              }]
             });
@@ -81,27 +73,27 @@
 </head>
 
 <body>
-  <button type="button" class="button" href="/year/2018">HOME</button>
-  <button type="button" class="button" data-toggle="offCanvas">STATE</button>
-  <div class="off-canvas position-top" id="offCanvas" data-off-canvas>
+  <a href="/year/2018" class="previous">HOME</a>
+  <button type="button" class="button" data-toggle="offCanvasState">STATE</button>
+  <div class="off-canvas position-top" id="offCanvasState" data-off-canvas>
       <ul class="menu vertical">
-          {{{STATE_BUTTONS}}}
+          <li>{{{STATE_BUTTONS}}}</li>
 
       </ul>
-  </div><button type="button" class="button" data-toggle="offCanvas">YEAR</button>
-  <div class="off-canvas position-top" id="offCanvas" data-off-canvas>
+  </div><button type="button" class="button" data-toggle="offCanvasYear">YEAR</button>
+  <div class="off-canvas position-top" id="offCanvasYear" data-off-canvas>
       <ul class="menu vertical">
-          {{{YEAR_BUTTONS}}}
+          <li>{{{YEAR_BUTTONS}}}</li>
       </ul>
   </div>
-  <button type="button" class="button" data-toggle="offCanvas">ENERGY SOURCE</button>
-  <div class="off-canvas position-top" id="offCanvas" data-off-canvas>
+  <button type="button" class="button" data-toggle="offCanvasEnergy">ENERGY SOURCE</button>
+  <div class="off-canvas position-top" id="offCanvasEnergy" data-off-canvas>
       <ul class="menu vertical">
-          <li><a href="/coal" target="_self">Coal</a></li>
-          <li><a href="/natural_gas" target="_self">Natural Gas</a></li>
-          <li><a href="/nuclear" target="_self">Nuclear</a></li>
-          <li><a href="/petroleum" target="_self">Petroleum</a></li>
-          <li><a href="/renewable" target="_self">Renewable</a></li>
+          <li><a href="/energy/coal" target="_self">Coal</a></li>
+          <li><a href="/energy/natural_gas" target="_self">Natural Gas</a></li>
+          <li><a href="/energy/nuclear" target="_self">Nuclear</a></li>
+          <li><a href="/energy/petroleum" target="_self">Petroleum</a></li>
+          <li><a href="/energy/renewable" target="_self">Renewable</a></li>
       </ul>
   </div>
 
@@ -109,7 +101,7 @@
   <h1 class="center">{{{TOPSTATE}}}</h1>
   <img class="imgcenter" src="{{{STATEIMG}}}" width="450" height="200" alt="Image of state" />
   <br>
-  <div class="grid-container">
+  <div class="grid-container" id="tableContainer">
     <table>
       <thead>
         <tr>

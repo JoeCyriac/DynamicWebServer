@@ -36,3 +36,7 @@ a:hover {
   color: white;
 }
 
+#tableContainer {
+  width: 100%;
+  overflow: scroll;
+}
