@@ -50,7 +50,8 @@ app.get('/', (req, res) => {
 // Helper function to capitalize the first letter
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
-  }
+}
+
 
 // GET request handler for '/year/*'
 app.get('/year/:selected_year', (req, res) => {
@@ -84,6 +85,21 @@ app.get('/year/:selected_year', (req, res) => {
                 if (year == 2018){
                     nextYear = 1960;
                 }
+
+                let i;
+                let list_state = '';
+                for (i in stateAbrev){
+                    list_state += '<li><a href="/state/' + stateAbrev[i] + '" target="_self">' + stateAbrev[i] + '</a></li>';
+                
+                }
+                let j;
+                let list_year = '';
+                for (j = 1960; j <= 2018; j++) {
+                    list_year += '<li><a href="/year/' + j + '" target="_self">' + j + '</a></li>';
+                }
+                
+                response = response.replace("{{{STATE_BUTTONS}}}", list_state);
+                response = response.replace("{{{YEAR_BUTTONS}}}", list_year);
 
                 response = response.replace("{{{PREV}}}", "/year/" + prevYear);
                 response = response.replace("{{{NEXT}}}", "/year/" + nextYear);
@@ -140,9 +156,6 @@ app.get('/state/:selected_state', (req, res) => {
             // modify `template` and send response
             // this will require a query to the SQL database
             let state = req.params.selected_state.toUpperCase();
-
-        
-
             
             let i;
             stateName = '';
@@ -171,6 +184,22 @@ app.get('/state/:selected_state', (req, res) => {
                 if (stateIndex == stateAbrev.length-1){
                     nextStateIndex = 0;
                 } 
+
+                i = 0;
+                let list_state = '';
+                for (i in stateAbrev){
+                    list_state += '<li><a href="/state/' + stateAbrev[i] + '" target="_self">' + stateAbrev[i] + '</a></li>';
+                
+                }
+                let j;
+                let list_year = '';
+                for (j = 1960; j <= 2018; j++) {
+                    list_year += '<li><a href="/year/' + j + '" target="_self">' + j + '</a></li>';
+                }
+                
+                response = response.replace("{{{STATE_BUTTONS}}}", list_state);
+                response = response.replace("{{{YEAR_BUTTONS}}}", list_year);
+
                 response = response.replace("{{{PREV}}}", "/state/" + stateAbrev[prevStateIndex]);
                 response = response.replace("{{{NEXT}}}", "/state/" + stateAbrev[nextStateIndex]);
 
@@ -180,7 +209,7 @@ app.get('/state/:selected_state', (req, res) => {
                     }
                     else {    
                     
-                        let i;
+                        i = 0;
                         let year_array = new Array();
                         let coal_array = new Array();
                         let coal_datastring = '';
@@ -280,6 +309,21 @@ app.get('/energy/:selected_energy_source', (req, res) => {
             else {
                 let response = template.replace("{{{TOPENERGY}}}", capitalizeFirstLetter(source));
                 response = response.replace("{{{ENERGYIMG}}}", "/images/" + source + ".jpg")
+
+                i = 0;
+                let list_state = '';
+                for (i in stateAbrev){
+                    list_state += '<li><a href="/state/' + stateAbrev[i] + '" target="_self">' + stateAbrev[i] + '</a></li>';
+                
+                }
+                let j;
+                let list_year = '';
+                for (j = 1960; j <= 2018; j++) {
+                    list_year += '<li><a href="/year/' + j + '" target="_self">' + j + '</a></li>';
+                }
+                
+                response = response.replace("{{{STATE_BUTTONS}}}", list_state);
+                response = response.replace("{{{YEAR_BUTTONS}}}", list_year);
 
                 let prevSourceIndex = sourceIndex-1;
                 let nextSourceIndex = sourceIndex+1;
