@@ -46,19 +46,19 @@
     <a href="/year/2018" class="button">HOME</a>
     <button type="button" class="button" data-toggle="offCanvasState">STATE</button>
     <div class="off-canvas position-top" id="offCanvasState" data-off-canvas>
-        <ul class="menu vertical">
+        <ul class="menu vertical center">
             {{{STATE_BUTTONS}}}
         </ul>
     </div>
     <button type="button" class="button" data-toggle="offCanvasYear">YEAR</button>
     <div class="off-canvas position-top" id="offCanvasYear" data-off-canvas>
-        <ul class="menu vertical">
+        <ul class="menu vertical center">
             {{{YEAR_BUTTONS}}}
         </ul>
     </div>
     <button type="button" class="button" data-toggle="offCanvasEnergy">ENERGY SOURCE</button>
     <div class="off-canvas position-top" id="offCanvasEnergy" data-off-canvas>
-        <ul class="menu vertical">
+        <ul class="menu vertical center">
           <li><a href="/energy/coal" target="_self">Coal</a></li>
           <li><a href="/energy/natural_gas" target="_self">Natural Gas</a></li>
           <li><a href="/energy/nuclear" target="_self">Nuclear</a></li>
@@ -69,6 +69,10 @@
 
 
     <h1 class="center">{{{TOPYEAR}}}</h1>
+    <br>
+    <div id="chartContainer" style="height: 350px; width: 100%;"></div>
+    <br>
+
     <div class="grid-container" id="tableContainer">
     <table>
         <thead>
@@ -87,10 +91,10 @@
         </tbody> 
       </table>
     </div>
-      <div id="chartContainer" style="height: 350px; width: 100%;"></div> 
+      <br>
+      <a href="{{{PREV}}}" class="previous center">&laquo; Previous</a>
+      <a href="{{{NEXT}}}" class="next center">Next &raquo;</a>
       <br><br>
-      <a href="{{{PREV}}}" class="previous">&laquo; Previous</a>
-      <a href="{{{NEXT}}}" class="next">Next &raquo;</a>
 
       <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
       <script src="../js/jquery-3.6.0.min.js"></script>

@@ -8,19 +8,16 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/foundation.css">
     <script type="application/javascript">
-        // `energy_type` and object of consumption per year per state => set these variables equal to appropriate value
-        //   * these variables will be defined and accessible from any script loaded after this one
-        var energy_type = {{{ENERGY_TYPE}}};
-        var energy_counts = {{{ENERGY_COUNTS}}}; // dictionary of arrays (e.g. {AK: [...], AL: [...], AR: [...], ...})
         
         window.onload = function () {
             var chart = new CanvasJS.Chart("chartContainer", {
                 animationEnabled: true,
                 title: {
-                    text: "Energy Consumption by Resource"
+                    text: "Energy Consumption by State"
                 },
                 axisX: {
-                    title: "Year"
+                    title: "Year",
+                    valueFormatString: "####"
                 },
                 axisY: {
                     title: "Total Consumption"
@@ -28,48 +25,7 @@
                 toolTip: {
                     shared: true
                 },
-                data: [
-                    {
-		                type: "stackedArea100",
-		                name: "Coal",
-		                showInLegend: "true",
-		                dataPoints: [
-			                  {{{COAL_DATA}}}
-		                ]
-	                },
-                    {
-		                type: "stackedArea100",
-		                name: "Natural Gas",
-		                showInLegend: "true",
-		                dataPoints: [
-			                  {{{NATURAL_GAS_DATA}}}
-		                ]
-	                },
-                    {
-		                type: "stackedArea100",
-		                name: "Nuclear",
-		                showInLegend: "true",
-		                dataPoints: [
-			                  {{{NUCLEAR_DATA}}}
-		                ]
-	                },
-                    {
-		                type: "stackedArea100",
-		                name: "Petroleum",
-		                showInLegend: "true",
-		                dataPoints: [
-			                  {{{PETROLEUM_DATA}}}
-		                ]
-	                },
-                    {
-		                type: "stackedArea100",
-		                name: "Renewable",
-		                showInLegend: "true",
-		                dataPoints: [
-			                  {{{RENEWABLE_DATA}}}
-		                ]
-	                }
-                ]
+                data: [{{{ENERGY_DATA}}}]
             });
 
             chart.render();
@@ -81,18 +37,18 @@
     <a href="/year/2018" class="button">HOME</a>
     <button type="button" class="button" data-toggle="offCanvasState">STATE</button>
     <div class="off-canvas position-top" id="offCanvasState" data-off-canvas>
-        <ul class="menu vertical">
+        <ul class="menu vertical center">
             <li>{{{STATE_BUTTONS}}}</li>
         </ul>
     </div><button type="button" class="button" data-toggle="offCanvasYear">YEAR</button>
     <div class="off-canvas position-top" id="offCanvasYear" data-off-canvas>
-        <ul class="menu vertical">
+        <ul class="menu vertical center">
             <li>{{{YEAR_BUTTONS}}}</li>
         </ul>
     </div>
     <button type="button" class="button" data-toggle="offCanvasEnergy">ENERGY SOURCE</button>
     <div class="off-canvas position-top" id="offCanvasEnergy" data-off-canvas>
-        <ul class="menu vertical">
+        <ul class="menu vertical center">
             <li><a href="/energy/coal" target="_self">Coal</a></li>
             <li><a href="/energy/natural_gas" target="_self">Natural Gas</a></li>
             <li><a href="/energy/nuclear" target="_self">Nuclear</a></li>
@@ -100,7 +56,6 @@
             <li><a href="/energy/renewable" target="_self">Renewable</a></li>
         </ul>
     </div>
-
 
     <div class="grid-y">
         <div class="grid-x grid-padding-x grid-padding-x">
@@ -114,7 +69,10 @@
             </div>
         </div>
     </div>
-    <br>
+    <br><br>
+    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <br><br>
     <div id="tableContainer">
         <table>
             <thead>
@@ -128,9 +86,6 @@
             </tbody>
         </table>
     </div>
-
-    <a href="{{{PREV}}}" class="previous">&laquo; Previous</a>
-    <a href="{{{NEXT}}}" class="next">Next &raquo;</a>
     <br>
 
     <script src="../js/jquery-3.6.0.min.js"></script>
@@ -139,7 +94,9 @@
     <script type="application/javascript">
         $(document).foundation();
     </script>
-    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
-    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    
+    <a href="{{{PREV}}}" class="previous center">&laquo; Previous</a>
+    <a href="{{{NEXT}}}" class="next center">Next &raquo;</a>
+    <br><br>
 </body>
 </html>
