@@ -286,6 +286,8 @@ app.get('/energy/:selected_energy_source', (req, res) => {
             // this will require a query to the SQL database
             let source = req.params.selected_energy_source.toLowerCase();
 
+            let total = 0;
+
             let energyList = ['coal', 'natural_gas', 'nuclear', 'petroleum', 'renewable'];
             let sourceIndex = '';
             let i;
@@ -376,6 +378,8 @@ app.get('/energy/:selected_energy_source', (req, res) => {
                             list_items1 += '<th>' + rows[i].state_abbreviation + '</th>';
                         }
 
+                        list_items1 += '<th>' + 'total' + '</th>'
+
                         if(source == 'coal')
                         {
                             energy_data = coal_array;
@@ -439,27 +443,35 @@ app.get('/energy/:selected_energy_source', (req, res) => {
                             for(j = x; j < x + 51; j++) {
                                 if (source == 'coal') {
                                     list_items2 += '<td>' + rows[j].coal + '</td>';
+                                    total += rows[j].coal;
                                 } 
                                 
                                 else if (source == 'natural_gas') {
                                     list_items2 += '<td>' + rows[j].natural_gas + '</td>';
+                                    total += rows[j].natural_gas;
                                 } 
                                 
                                 else if (source == 'nuclear') {
                                     list_items2 += '<td>' + rows[j].nuclear + '</td>';
+                                    total += rows[j].nuclear;
                                 } 
                                 
                                 else if (source == 'petroleum') {
                                     list_items2 += '<td>' + rows[j].petroleum + '</td>';
+                                    total += rows[j].petroleum;
                                 } 
                                 
                                 else if (source == 'renewable') {
                                     list_items2 += '<td>' + rows[j].renewable + '</td>';
+                                    total += rows[j].renewable;
                                 }
+
                             }
+                            list_items2 += '<td>' + total + '</td>'
                             list_items2 += '</tr>'
                             i += 51;
                             x += 51;
+                            total = 0;
                         }
 
                         response = response.replace("{{{TABLEH}}}", list_items1);
